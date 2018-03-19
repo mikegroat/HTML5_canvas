@@ -17,20 +17,29 @@ var maxRadius = 4;
 window.addEventListener('mousemove', function (event) {
     mouse.x = event.x;
     mouse.y = event.y;
-    console.log('mouse at %s, %s',mouse.x, mouse.y);
+//    console.log('mouse at %s, %s',mouse.x, mouse.y);
 });
 
-window.addEventListener('mousedown', function() {
-    // Make sizzle stronger
+window.addEventListener('mousedown', function(event) {
+    // if left mouse button pushed
+    if (event.button == 0) {
+    // bigger sparks
     sparkSizeFactor = 5;
-    for (var i=0; i<sparkArray.length; i++) {
-        sparkArray[i].speed = sparkArray[i].speed.multiply(100);
+    } else {
+        // explode the parks
+        for (var i=0; i<sparkArray.length; i++) {
+            sparkArray[i].speed = sparkArray[i].speed.multiply(20);
+            sparkArray[i].radius *= 10;
+        }    
     }
 });
 
-window.addEventListener('mouseup', function() {
-    // Return sizzle to normal
+window.addEventListener('mouseup', function(event) {
+    // if left mouse button released
+    if (event.button == 0) {
+    // Return sparks to normal size
     sparkSizeFactor = 1;
+    }
 });
 
 window.addEventListener('resize', function() {
@@ -42,13 +51,13 @@ function animate() {
     requestAnimationFrame(animate);
     c.clearRect(0,0,window.innerWidth, window.innerHeight);
     // Create some new sparks near the mouse position
-    var numSparks = randIntBetweenLimits(1,4);
+    var numSparks = randIntBetween(1,4);
     for (var i=0; i<numSparks; i++) {
-        var x = mouse.x + randIntBetweenLimits(- 4, 4);
-        var y = mouse.y + randIntBetweenLimits(- 4, 4);
-        var dx = Math.floor(Math.random()*9)-4;
-        var dy = Math.floor(Math.random()*9)-4;
-        var r = randIntBetweenLimits(1, 20) * sparkSizeFactor;
+        var x = mouse.x + randIntBetween(- 4, 4);
+        var y = mouse.y + randIntBetween(- 4, 4);
+        var dx = randIntBetween(-4 , 4);
+        var dy = randIntBetween(-4 , 4);
+        var r = randIntBetween(1, 20) * sparkSizeFactor;
         var colors = colorArray;
         var color = randomColor(colorArray);
         var spark = new Particle(x, y, dx, dy, r, color);
@@ -79,8 +88,9 @@ function init () {
 }
 
 
-function randIntBetweenLimits(min, max) {
-    return Math.floor(Math.random() * (max+1)) + min;
+function randIntBetween(min, max) {
+    var range = max - min;
+    return Math.floor(Math.random() * range) + min;
 }
 
 init();

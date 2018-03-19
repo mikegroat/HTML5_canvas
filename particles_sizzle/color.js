@@ -8,6 +8,6 @@ var colorArray = [
 ];
 
 function randomColor(colors) {
-    var i = randIntBetweenLimits(0, colors.length - 1);
+    var i = randIntBetween(0, colors.length - 1);
     return colors[i];
 }

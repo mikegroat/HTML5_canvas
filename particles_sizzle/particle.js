@@ -1,7 +1,7 @@
 
 function Particle(x = 0, y= 0, dx = 0, dy = 0, radius = 1, color) {
     this.position = new Vector(x, y);
-    this.id = randIntBetweenLimits(1, 100000000);
+    this.id = randIntBetween(1, 100000000);
     this.speed = new Vector(dx, dy);
     this.radius = radius;
     this.mass = radius;
