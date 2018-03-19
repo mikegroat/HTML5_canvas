@@ -1,18 +1,17 @@
-// This program will create a sizzle at the mouse pointer, and then make the sizzle stronger while the mouse button is clicked.
+// This program will create a set of rectangles that grow randomly.
 
 // Global variables
-var sparks = new Sparks();
-var sparkSizeFactor = 1;
 var canvas = document.querySelector('canvas');
 var c = canvas.getContext('2d');
-var hotdog;
 var mouse = {
     x: undefined,
     y: undefined
 }
-var maxVelocity = 6;
+var sparks = new Sparks();
+var sparkSizeFactor = 1;
 
-var maxRadius = 4;
+
+var rectArray = [];
 
 // Event listeners
 window.addEventListener('mousemove', function (event) {
@@ -24,9 +23,9 @@ window.addEventListener('mousemove', function (event) {
 window.addEventListener('mousedown', function(event) {
     // if left mouse button pushed
     if (event.button == 0) {
-    // bigger sparks
-    sparks.bigger(5);
-    sparks.setDrawFunction(drawHotdog);
+            // bigger sparks
+        sparks.bigger(5);
+        sparks.setDrawFunction(drawHotdog);
     }
 });
 
@@ -38,8 +37,8 @@ window.addEventListener('keydown', function(event) {
 window.addEventListener('mouseup', function(event) {
     // if left mouse button released
     if (event.button == 0) {
-    // Return sparks to normal size
-    sparks.bigger(1);
+            // Return sparks to normal size
+        sparks.bigger(1);
     }
 });
 
@@ -47,29 +46,36 @@ window.addEventListener('resize', function() {
     init();
 });
 
-// draw the hotdog
-function drawHotdog() {
-    c.drawImage(hotdog, this.x, this.y);
-}
 
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
     c.clearRect(0,0,window.innerWidth, window.innerHeight);
-    c.font = "60px Arial";
-    c.fillText("Sparkle Cursor!",canvas.width/2-420, canvas.height/2 - 30);
-    // Create some new sparks near the mouse position
+    for (var i=0; i<rectArray.length; i++) {
+        var rectangle = rectArray[i];
+        rectangle.grow();
+        rectangle.draw();
+    }
+    // Create some new sparks at the mouse pointer
     sparks.newSparks({posx: mouse.x, posy: mouse.y, colors: colorArray});
     // Now display all the sparks
     sparks.update();
+
+    c.font = "60px Arial";
+    c.fillStyle = "#A9A9A9";
+    c.fillText("Random Rectangles with Sparkling Pointer!",canvas.width/2-630, canvas.height/2 - 30);
 }
 
 // Initialization function
 function init () {
+    rectArray = [];
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    hotdog = document.getElementById("hotdog");
-    
+    var numRects = 20;
+    var rectWidth = Math.floor(canvas.width/numRects);
+    for (var i=0; i<numRects; i++) {
+        rectArray.push(new Rectangle(rectWidth*i, canvas.height, randIntBetween(100, 400), rectWidth, randomColor(colorArray)));
+    }    
 }
 
 

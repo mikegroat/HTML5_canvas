@@ -76,6 +76,8 @@ function Particle(x = 0, y= 0, dx = 0, dy = 0, radius = 1, color = randomColor()
     }
 
     this.processCollision = function() {
+
+        // FIXME: this currently allows particles to get entangled - likely when two particles collide near a border
         // start by bouncing off a wall if necesary so velocity will be pointing in the right direction
         this.isOnEdge();
 
