@@ -74,7 +74,11 @@ function init () {
     var numRects = 20;
     var rectWidth = Math.floor(canvas.width/numRects);
     for (var i=0; i<numRects; i++) {
-        rectArray.push(new Rectangle(rectWidth*i, canvas.height, randIntBetween(100, 400), rectWidth, randomColor(colorArray)));
+        var color = randomColor(colorArray);
+        if (i > 0) while (color == rectArray[i-1].color) {
+            color = randomColor(colorArray);
+        }
+        rectArray.push(new Rectangle(rectWidth*i, canvas.height, randIntBetween(100, 400), rectWidth, color));
     }    
 }
 
