@@ -9,7 +9,7 @@ var mouse = {
 }
 var sparks = new Sparks();
 var sparkSizeFactor = 1;
-
+var palettes;
 
 var rectArray = [];
 
@@ -57,13 +57,15 @@ function animate() {
         rectangle.draw();
     }
     // Create some new sparks at the mouse pointer
-    sparks.newSparks({posx: mouse.x, posy: mouse.y, colors: colorArray});
+    sparks.newSparks({posx: mouse.x, posy: mouse.y});
     // Now display all the sparks
     sparks.update();
 
     c.font = "60px Arial";
     c.fillStyle = "#A9A9A9";
-    c.fillText("Random Rectangles with Sparkling Pointer!",canvas.width/2-630, canvas.height/2 - 30);
+    var canText = "Random Rectangles with Sparkling Pointer!";
+    var widthOffset = c.measureText(canText).width / 2;
+    c.fillText("Random Rectangles with Sparkling Pointer!",canvas.width/2-widthOffset, canvas.height/2 - 30);
 }
 
 // Initialization function
@@ -71,21 +73,19 @@ function init () {
     rectArray = [];
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    var rectsPalette = {name: "rectsPalette", colors: ["#FFE71B", "#E87E0C", "#FF0000", "#8B0CE8", "#0D68FF"]};
+    palettes = new ColorPalettes();
+    palettes.createPalette(rectsPalette.name, rectsPalette.colors);
+
     var numRects = 20;
     var rectWidth = Math.floor(canvas.width/numRects);
     for (var i=0; i<numRects; i++) {
-        var color = randomColor(colorArray);
+        var color = palettes.randomColor("rectsPalette");
         if (i > 0) while (color == rectArray[i-1].color) {
-            color = randomColor(colorArray);
+            color = palettes.randomColor("rectsPalette");
         }
         rectArray.push(new Rectangle(rectWidth*i, canvas.height, randIntBetween(100, 400), rectWidth, color));
     }    
-}
-
-
-function randIntBetween(min, max) {
-    var range = max - min;
-    return Math.floor(Math.random() * range) + min;
 }
 
 init();

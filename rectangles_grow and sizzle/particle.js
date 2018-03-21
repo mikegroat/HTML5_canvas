@@ -7,26 +7,13 @@ function Particle(x = 0, y= 0, dx = 0, dy = 0, radius = 1, color) {
     this.mass = radius;
     this.color = color;
     this.collidedParticle = undefined;
-    this.drawFunction = undefined;
-
-    this.setDrawFunction = function(drawFunction = undefined) {
-        if (drawFunction != undefined) {
-            this.drawFunction = drawFunction;
-        }
-    }
 
     this.draw = function() {
-        if (this.drawFunction == undefined) {
-            // standard draw is to draw circles
-            c. beginPath();
-            c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
-            c.fillStyle = this.color;
-            c.fill();        
-        } else {
-            // but you can define your own draw function
-            this.drawfunction();
-        }
-
+        c. beginPath();
+        c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2, false);
+        c.fillStyle = this.color;
+        c.fill();    
+//        this.drawSpeedVector();
     }
 
     this.update = function() {

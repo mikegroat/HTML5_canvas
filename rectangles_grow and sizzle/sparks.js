@@ -6,6 +6,11 @@ function Sparks() {
     var curColor;
     var drawFunction = undefined;
 
+    var sparksPalette = {name: "sparksPalette", colors: ["#990A20", "#FF4460", "#FF1136", "#EB7284", "#CC0E2B"]};
+    var palettes = new ColorPalettes();
+    palettes.createPalette(sparksPalette.name, sparksPalette.colors);
+
+
 
     this.bigger = function(sizefactor) {
         this.sparkSizeFactor = sizefactor;
@@ -15,7 +20,7 @@ function Sparks() {
         this.drawFunction = drawFunction;
     }
 
-    this.newSparks = function({posx, posy, dist = 4, num = 4, size = 20, speed = 4, colors}) {
+    this.newSparks = function({posx, posy, dist = 4, num = 4, size = 20, speed = 4, colors = palettes.getPalette("sparksPalette").colors } ) {
         // validate the parameters
         if (posx == null || posy == null || colors == null) return false;
         // Create some new sparks
@@ -27,7 +32,7 @@ function Sparks() {
             var dy = randIntBetween(-speed , speed);
             var r = randIntBetween(1, size) * this.sparkSizeFactor;
             var colors = colors;
-            var color = randomColor(colorArray);
+            var color = palettes.randomColor("sparksPalette");
             var spark = new Particle(x, y, dx, dy, r, color);
             spark.setDrawFunction = this.drawFunction;
             spark.colors = colors;
