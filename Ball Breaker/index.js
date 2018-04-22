@@ -42,7 +42,7 @@ const prizeSizeIncrement = (maxPrizeSize - minPrizeSize) / 20;
 var prizesCaptured = [];
 
 
-// Event listeners
+// Mouse event listeners
 window.addEventListener('mousemove', function (event) {
     mouse.x = event.x;
     mouse.y = event.y;
@@ -70,6 +70,53 @@ window.addEventListener('mouseup', function(event) {
     }
 });
 
+// Touch event listeners
+window.addEventListener('touchmove', function (event) {
+    mouse.x = event.touches[0].clientX;
+    mouse.y = event.touches[0].clientY;
+    console.log('touchmove to %s, %s',mouse.x, mouse.y);
+});
+
+window.addEventListener('touchstart', function(event) {
+    console.log("touchstart = %s", JSON.stringify(event));
+    // do we change the state?
+    if (state == "waiting") {
+        state = "aiming";
+    }
+});
+
+window.addEventListener('touchend', function(event) {
+    console.log("touchend = %s", JSON.stringify(event));
+    // do we change the state?
+    if (state == "aiming") {
+        state = "shooting";
+        // Prime ball array with first ball
+        var newBall = new Particle(ballOrigin.x, ballOrigin.y, shotVector.x, shotVector.y, ballSize, "#000000");
+        newBall.onScreen = true;
+        ballArray.push(newBall);
+        ballsReleased = 1;
+    }
+});
+
+document.body.addEventListener('touchstart', function (event) {
+    if (event.target == canvas) {
+        event.preventDefault();
+    }
+});
+
+document.body.addEventListener('touchend', function (event) {
+    if (event.target == canvas) {
+        event.preventDefault();
+    }
+});
+
+document.body.addEventListener('touchmove', function (event) {
+    if (event.target == canvas) {
+        event.preventDefault();
+    }
+});
+
+// Other event listeners
 window.addEventListener('keypress', function(event) {
     if (state == 'end_game') {
         init();
@@ -110,12 +157,11 @@ function init () {
 
 
     // Set the color palettes
-    palettes.createPalette("Primary", ["#FFAAAA", "#D46A6A", "#AA3939", "#801515", "#550000"]);
-    palettes.createPalette("Secondary1", ["#550000", "#D49A6A", "#AA6C39", "#804515", "#552700"]);
-    palettes.createPalette("Secondary2", ["#669999", "#407F7F", "#226666", "#0D4D4D", "#003333"]);
-    palettes.createPalette("Complementary", ["#88CC88", "#55AA55", "#2D882D", "#116611", "#004400"]);
+    palettes.createPalette("Blocks", ["#7F1C00", "#FF673C", "#FF3800", "#7F5245", "#CC2D00"]);
+    palettes.createPalette("Prizes", ["#077F67", "#5BFFDE", "#0FFFCE", "#2E7F6F", "#0CCCA5"]);
+    palettes.createPalette("Text", ["#11167F", "#6F75FF", "#222CFF", "#373B7F", "#1B23CC"]);
 
-    endGameColor = palettes.getColor("Secondary1", 0);
+    endGameColor = palettes.getColor("Text", 0);
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -237,7 +283,7 @@ function newRectRow() {
         for (var i=0; i<numRects; i++) {
             if (randTF()) {
                 // create a new rectangle
-                var temprect = new Rectangle(rectWidth*i+xStart, yStart, rectWidth, rectWidth, palettes.randomColor("Primary"), "#000000", randIntBetween(round, round*2));
+                var temprect = new Rectangle(rectWidth*i+xStart, yStart, rectWidth, rectWidth, palettes.randomColor("Blocks"), "#000000", randIntBetween(round, round*2));
                 rectArray.push(temprect);
                 temprect.draw();
             } else {
@@ -252,7 +298,7 @@ function newRectRow() {
             // create a prize at one of the blank spaces
             var whichBlank = randIntBetween(0, emptyRectArray.length-1);
             var i = emptyRectArray[whichBlank];
-            var tempPrize = new Particle(xStart + rectWidth*i + rectWidth/2, yStart - rectWidth/2, 0, 0, minPrizeSize, palettes.randomColor(palettes.randomPalette()));
+            var tempPrize = new Particle(xStart + rectWidth*i + rectWidth/2, yStart - rectWidth/2, 0, 0, minPrizeSize, palettes.randomColor("Prizes"));
             tempPrize.prize = {balls: 1};
             prizeArray.push(tempPrize);
             tempPrize.draw();
@@ -395,7 +441,7 @@ function checkEndGame() {
         c.fillText("Press any key to restart", canvas.width/2, canvas.height * 2/3);
         endGameColorCount++;
         if (endGameColorCount >= 10) {
-            endGameColor = palettes.nextColor("Secondary1", endGameColor);
+            endGameColor = palettes.nextColor("Text", endGameColor);
             endGameColorCount = 0;
         }
     } 
