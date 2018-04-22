@@ -14,6 +14,8 @@ var hiScore = 0;
 var startTime = Date.now();
 var frames = 0;
 var fps = 0;
+const maxTextFontSize = 30;
+var textFontSize = maxTextFontSize;
 
 // rectangle globals
 var numrects;
@@ -82,6 +84,8 @@ window.addEventListener('touchstart', function(event) {
     // do we change the state?
     if (state == "waiting") {
         state = "aiming";
+    } else if (state = 'end_game') {
+        init();
     }
 });
 
@@ -167,6 +171,8 @@ function init () {
     canvas.height = window.innerHeight;
     lastRowBottom = canvas.height - rectWidth;
     numRects = Math.floor(canvas.width/rectWidth);
+
+    textFontSize = Math.min(canvas.width/100, maxTextFontSize);
 
     state = "new_row";
 
