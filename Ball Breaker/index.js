@@ -172,7 +172,7 @@ function init () {
     lastRowBottom = canvas.height - rectWidth;
     numRects = Math.floor(canvas.width/rectWidth);
 
-    textFontSize = Math.min(canvas.width/100, maxTextFontSize);
+    textFontSize = Math.min(Math.floor(canvas.width/100), maxTextFontSize);
 
     state = "new_row";
 
@@ -451,7 +451,8 @@ function checkEndGame() {
             endGameColorCount = 0;
         }
     } 
-    c.font = "30px Arial";
+    var font = textFontSize + "px Arial";
+    c.font = font;
     c.fillStyle = "#A9A9A9";
     var pCount = prizeCount("balls", prizesCaptured);
     if (pCount == 0) c.fillText("Balls: " + ballCount, canvas.width * 1/5, 50); 
