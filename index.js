@@ -172,7 +172,7 @@ function init () {
     lastRowBottom = canvas.height - rectWidth;
     numRects = Math.floor(canvas.width/rectWidth);
 
-    textFontSize = Math.min(canvas.width/100, maxTextFontSize);
+    textFontSize = Math.min(Math.floor(canvas.width/100), maxTextFontSize);
 
     state = "new_row";
 
