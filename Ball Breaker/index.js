@@ -468,6 +468,7 @@ function checkEndGame() {
         frames = 0;
         startTime = Date.now();
     }    
+    c.fillText("Font size: " + font, 100, canvas.height - 40);
     c.fillText("FPS: " + fps, canvas.width -100, canvas.height - 40);
 }
 
