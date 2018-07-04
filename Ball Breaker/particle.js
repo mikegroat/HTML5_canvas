@@ -18,9 +18,9 @@ function Particle(x = 0, y= 0, dx = 0, dy = 0, radius = 1, color) {
 //        this.drawSpeedVector();
     }
 
-    this.update = function(calcs={left: true, right: true, top: true, bottom: true}) {
+    this.update = function(calcs={left: true, right: true, top: true, bottom: true}, divs=1) {
         var res = this.isOnEdge(0, 0, window.innerWidth, window.innerHeight, calcs);
-        this.position = this.position.add(this.speed);
+        this.position = this.position.add(this.speed.multiply(1/divs));
 
         // move toward target if set
         if (this.moveSteps > 0) {

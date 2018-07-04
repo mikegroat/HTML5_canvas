@@ -29,7 +29,7 @@ var emptyRectArray = [];
 // ball globals
 const ballSize = rectWidth/5;
 const releaseDist = ballSize * 5;
-const ballSpeed = 10;
+var ballSpeed = 20;
 const minBalls = 1;
 var ballOrigin = new Vector();
 var ballCount = minBalls;
@@ -125,8 +125,18 @@ window.addEventListener('keypress', function(event) {
     if (state == 'end_game') {
         init();
     } else {
-        for (var i=0; i<ballArray.length; i++) {
-            ballArray[i].speed.y = 10;
+        switch(event.key) {
+            case '+':
+                ballSpeed = (ballSpeed * 1.1).toFixed(2);
+                break;
+            case '-':
+                ballSpeed = (ballSpeed * 0.9).toFixed(2);
+                break;
+            case ' ':
+                for (var i=0; i<ballArray.length; i++) {
+                    ballArray[i].speed.y = 10;
+                }
+                break;
         }
     }
 });
@@ -142,6 +152,9 @@ function animate() {
 //    console.log("state = %s", state);
     requestAnimationFrame(animate);
     c.clearRect(0,0,window.innerWidth, window.innerHeight);
+    for (var i=0; i<ballArray.length; i++) {
+        ballArray[i].speed.normalize().multiply(ballSpeed);
+    }
     drawShotVector();
     animatePrizes();
     drawRects();
@@ -158,6 +171,13 @@ function init () {
     score = 0;
     round = 0;
     ballCount = minBalls;
+
+    hiScore = getCookie('high_score');
+    if (hiScore == "") {
+        hiscore = 0;
+    } else {
+        hiScore = parseInt(hiScore,10);
+    }
 
 
     // Set the color palettes
@@ -335,17 +355,26 @@ function releaseBalls() {
         // update and draw all balls 
         for (var i=0; i<ballArray.length; i++) {
             var currBall = ballArray[i];
-            currBall.update({left: true, right: true, top: true, bottom: false});
+            // update the ball speed in case the user has changed the game speed
+            currBall.speed = currBall.speed.normalize().multiply(ballSpeed);
 
-            // check to see if the ball has collided with any of the rectangles or prizes
-            var res = hasBallCollided(currBall);
-            
+            // Move balls 1 pixel at a time and check to see if they've collided with a block
+            // purpose of this is to keep balls from getting inside a block, regardless of how fast the
+            // ball speed is
+            for (var j=0; j<ballSpeed; j++) {
+                currBall.update({left: true, right: true, top: true, bottom: false},ballSpeed);
+
+                // check to see if the ball has collided with any of the rectangles or prizes
+                var res = hasBallCollided(currBall);
+                
+            }
             // if ball has dropped off the bottom of the screen
             if (currBall.position.y - ballSize > canvas.height) {
                 currBall.onScreen = false;
             } else {
                 currBall.draw();
             }
+    
         }
 
         var lastBallLeaving;
@@ -444,6 +473,7 @@ function checkEndGame() {
         c.textAlign = 'center';
         c.fillText("Game Over", canvas.width/2, canvas.height/2);
         c.font = '60px Arial';
+        setCookie('high_score', (hiScore).toString(10), 360);
         c.fillText("Press any key to restart", canvas.width/2, canvas.height * 2/3);
         endGameColorCount++;
         if (endGameColorCount >= 10) {
@@ -469,6 +499,7 @@ function checkEndGame() {
         startTime = Date.now();
     }    
     c.fillText("Font size: " + font, 100, canvas.height - 40);
+    c.fillText("Ball Speed: " + Math.round(ballSpeed), canvas.width/2, canvas.height - 40);
     c.fillText("FPS: " + fps, canvas.width -100, canvas.height - 40);
 }
 
