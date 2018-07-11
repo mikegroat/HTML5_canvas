@@ -295,6 +295,9 @@ function prizeCount(pType, pArray) {
 }
 
 function updatePrizeCount() {
+    // Update score with bonus based on number of balls captured as a percentage of balls you started with this roundprizeCount("balls", prizesCaptured)
+    var bonusPct = prizeCount("balls", prizesCaptured)/ballCount;
+    score += Math.round(bonusPct*score);
     ballCount += prizeCount("balls", prizesCaptured);
     clearPrize("balls", prizesCaptured);
 }
@@ -485,10 +488,15 @@ function checkEndGame() {
     c.font = font;
     c.fillStyle = "#A9A9A9";
     var pCount = prizeCount("balls", prizesCaptured);
-    if (pCount == 0) c.fillText("Balls: " + ballCount, canvas.width * 1/5, 50); 
-    else c.fillText("Balls: " + ballCount + " + " + pCount, canvas.width * 1/5, 50);
+    if (pCount == 0) {
+        c.fillText("Balls: " + ballCount, canvas.width * 1/5, 50); 
+        c.fillText("Score: " + score, canvas.width * 3/5, 50);
+    } 
+    else {
+        c.fillText("Balls: " + ballCount + " + " + pCount, canvas.width * 1/5, 50);
+        c.fillText("Score: " + score + " + " + Math.round(pCount/ballCount * score), canvas.width * 3/5, 50);
+    }
     c.fillText("Round: " + round, canvas.width * 2/5, 50);
-    c.fillText("Score: " + score, canvas.width * 3/5, 50);
     if (score > hiScore) hiScore = score;
     c.fillText("High Score: " + hiScore, canvas.width * 4/5, 50);
     frames++;
